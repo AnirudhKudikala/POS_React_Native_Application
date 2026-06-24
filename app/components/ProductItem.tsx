@@ -28,14 +28,14 @@ const ProductItem = ({
 }: Props) => {
   return (
     <View style={styles.container}>
-      <Image
+      {/* <Image
         source={{
           uri:
             item.image ??
             "https://via.placeholder.com/60",
         }}
         style={styles.image}
-      />
+      /> */}
 
       <View style={styles.details}>
         <Text

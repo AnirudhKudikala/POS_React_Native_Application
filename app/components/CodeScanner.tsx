@@ -4,6 +4,7 @@ import { useCameraDevice, useCameraPermission } from 'react-native-vision-camera
 import { CodeScanner } from "react-native-vision-camera-barcode-scanner";
 import { products } from '../utils/products';
 import { Product } from '../utils/types';
+import { playBeep } from '../utils/audio';
 
 interface Props {
     onProductScanned: (
@@ -61,6 +62,7 @@ const CodeScannerComponent = ({
                     const product = products.find(item => item.barcode === barcode);
                   
                     if (product) {
+                      playBeep();
                       onProductScanned(product);
                       console.log(product);
                     }

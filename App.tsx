@@ -78,6 +78,12 @@ function App() {
     );
   };
 
+  const totalAmount = products.reduce(
+    (total, item) =>
+      total + item.price * item.quantity,
+    0
+  );
+
   return (
     <View style={{ flex: 1 }}>
       <CodeScannerComponent
@@ -94,6 +100,7 @@ function App() {
         onDecrease={
           decreaseQuantity
         }
+        totalAmount={totalAmount}
       />
     </View>
   );
