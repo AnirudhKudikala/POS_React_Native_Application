@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet } from 'react-native'
 import { useCameraDevice, useCameraPermission } from 'react-native-vision-camera';
 import { CodeScanner } from "react-native-vision-camera-barcode-scanner";
@@ -14,9 +14,10 @@ interface Props {
 const CodeScannerComponent = ({
     onProductScanned,
   }: Props) => {
-    const [isScanning, setIsScanning] = useState(true);
+    const lastBarcodeRef = useRef<string | null>(null);
     const cameraPermission = useCameraPermission()
     const device = useCameraDevice("back");
+    const SCAN_LATENCY_MS = 1500;
 
     useEffect(() => {
         cameraPermission.requestPermission()
@@ -35,28 +36,40 @@ const CodeScannerComponent = ({
             <CodeScanner
                 style={{ flex: 1 }}
                 isActive={true}
-                barcodeFormats={['all-formats']}
+                // barcodeFormats={['all-formats']}
+                barcodeFormats={['ean-13', 'code-128']}
                 onBarcodeScanned={(barcodes) => {
-                    if (!isScanning) {
-                        return;
+                    if (barcodes.length === 0) {
+                      return;
                     }
-                
-                    if (barcodes.length > 0) {
-                        console.error("Scanned:", barcodes[0].rawValue);
-                        const scannedProductRawvalue = barcodes[0].rawValue
-                        if (!scannedProductRawvalue) {
-                            return;
-                        }
-                        const product = products.find(
-                            item => item.barcode === scannedProductRawvalue
-                        );
-                          
-                        if (product) {
-                            onProductScanned(product);
-                            console.log(product);
-                            setIsScanning(false)
-                        }
+                  
+                    const barcode = barcodes[0].rawValue;
+                  
+                    if (!barcode) {
+                      return;
                     }
+                  
+                    // Ignore duplicate scans
+                    if (lastBarcodeRef.current === barcode) {
+                      return;
+                    }
+                  
+                    lastBarcodeRef.current = barcode;
+                  
+                    console.log("Scanned:", barcode);
+                  
+                    const product = products.find(item => item.barcode === barcode);
+                  
+                    if (product) {
+                      onProductScanned(product);
+                      console.log(product);
+                    }
+
+                    setTimeout(() => {
+                      if (lastBarcodeRef.current === barcode) {
+                        lastBarcodeRef.current = null;
+                      }
+                    }, SCAN_LATENCY_MS);
                 }}        
                 onError={(error) => {
                     console.error("Camera Error:", error);
