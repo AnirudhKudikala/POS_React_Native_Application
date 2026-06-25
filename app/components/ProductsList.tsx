@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {
+    Alert,
     FlatList,
     Modal,
     StyleSheet,
@@ -10,17 +11,36 @@ import {
 } from 'react-native';
 import ProductItem from './ProductItem';
 import { useCartStore } from '../store/cartStore';
+import { sendReceipt } from '../utils/api';
 
 const ProductsList = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [email, setEmail] = useState('');
-    const {cart, totalAmount} = useCartStore();
+    const cart = useCartStore(state => state.cart);
+    const totalAmount = useCartStore(state => state.totalAmount);
+    const clearCart = useCartStore(state => state.clearCart);
 
-    const sendEmail = () => {
-        console.log('Send receipt to:', email);
+    const sendEmail = async () => {
+        try {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        setIsModalVisible(false);
-        setEmail('');
+            if (!emailRegex.test(email)) {
+                Alert.alert('Invalid Email', 'Please enter a valid email address.');
+                return;
+            }
+            const response = await sendReceipt(email, cart, totalAmount);
+            setIsModalVisible(false);
+            setEmail('');
+    
+            if (response.success) {
+                clearCart();
+                Alert.alert('Success', 'Receipt sent successfully');
+            } else {
+                Alert.alert('Error', response.message);
+            }
+        } catch (error) {
+            Alert.alert('Error', 'Unable to send email');
+        }
     };
     return (
         <View style={{ flex: 0.6, backgroundColor: 'white' }}>
@@ -77,7 +97,11 @@ const ProductsList = () => {
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                style={styles.sendModalButton}
+                                disabled={!email.trim()}
+                                style={[
+                                    styles.sendModalButton,
+                                    !email.trim() && styles.sendModalButtonDisabled,
+                                ]}
                                 onPress={sendEmail}
                             >
                                 <Text style={styles.sendText}>Send</Text>
