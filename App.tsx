@@ -85,7 +85,7 @@ function App() {
   );
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: "#f4f4f4" }}>
       <CodeScannerComponent
         onProductScanned={
           handleProductScanned
