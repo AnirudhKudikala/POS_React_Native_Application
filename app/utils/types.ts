@@ -4,8 +4,11 @@ export interface Product {
     barcode: string;
     name: string;
     price: number;
-    quantity: number;
     image?: string;
+}
+
+export interface CartItem extends Product{
+    quantity: number
 }
 
 export type RootStackParamList = {

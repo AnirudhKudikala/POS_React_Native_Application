@@ -2,28 +2,24 @@ import { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import {
     useCameraDevice,
-    useCameraPermission,
+    useCameraPermission
 } from 'react-native-vision-camera';
 import { CodeScanner } from 'react-native-vision-camera-barcode-scanner';
-import { products } from '../utils/products';
-import { Product } from '../utils/types';
 import { playBeep } from '../utils/audio';
+import { useCartStore } from '../store/cartStore';
 
-interface Props {
-    onProductScanned: (product: Product) => void;
-}
-
-const CodeScannerComponent = ({ onProductScanned }: Props) => {
+const CodeScannerComponent = () => {
     const lastBarcodeRef = useRef<string | null>(null);
     const cameraPermission = useCameraPermission();
     const device = useCameraDevice('back');
+    const scanBarcode = useCartStore(state => state.scanBarcode);
     const SCAN_LATENCY_MS = 1500;
 
     useEffect(() => {
         cameraPermission.requestPermission();
     }, []);
 
-    const onBarcodeScanned = (barcodes: Object) => {
+    const onBarcodeScanned = async (barcodes: any) => {
         if (barcodes.length === 0) {
             return;
         }
@@ -34,7 +30,6 @@ const CodeScannerComponent = ({ onProductScanned }: Props) => {
             return;
         }
 
-        // Ignore duplicate scans
         if (lastBarcodeRef.current === barcode) {
             return;
         }
@@ -43,12 +38,11 @@ const CodeScannerComponent = ({ onProductScanned }: Props) => {
 
         console.log('Scanned:', barcode);
 
-        const product = products.find(item => item.barcode === barcode);
-
-        if (product) {
+        try {
+            await scanBarcode(barcode);
             playBeep();
-            onProductScanned(product);
-            console.log(product);
+        } catch (error) {
+            console.error(error);
         }
 
         setTimeout(() => {
@@ -86,8 +80,8 @@ const styles = StyleSheet.create({
     textContainer: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
-    },
+        alignItems: 'center'
+    }
 });
 
 export default CodeScannerComponent;

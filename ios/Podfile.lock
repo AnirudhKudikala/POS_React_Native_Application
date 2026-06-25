@@ -2380,7 +2380,7 @@ SPEC CHECKSUMS:
   GoogleToolboxForMac: d1a2cbf009c453f4d6ded37c105e2f67a32206d8
   GoogleUtilities: 4f2618a4a1e762a1ee134a1e2323bba9843e06da
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
-  hermes-engine: 89fa5a7f3cd8bc6634626a0a7c3ee7f74731c364
+  hermes-engine: ce92ceff51f5fbfedf7975aa32d2a871ac3976e5
   MLImage: 2ab9c968e75f57911c16f4c9d9e8a8e9604a86a1
   MLKitBarcodeScanning: 72c6437f13a900833b400136be53a8a5d86f42fa
   MLKitCommon: 26b779f072a182c1603d4c88a101c350cac837b1
@@ -2397,7 +2397,7 @@ SPEC CHECKSUMS:
   React: 2574546f2d017abd14d0c9b48cf2b6a0547c2591
   React-callinvoker: 03cd4b931d1d583d87aae99b8f7b6fe26bf571ee
   React-Core: 1c824d9c7dd8aa760b5f1b50d5a54c2a3f598f87
-  React-Core-prebuilt: 7da85c26e5616d52f119b81ce5e3e6fc5c9bda49
+  React-Core-prebuilt: bbc30e3512d43763b465017a0afcf9802881bc99
   React-CoreModules: 2f9ed75bca7f6dea2b70e8a1f4a5ca9b6be52d76
   React-cxxreact: 7103d5ba69848c039e11079e74ceede05efe795e
   React-debug: 8cc8d99ccc664ef9e873027f7fc3fb0a50496012

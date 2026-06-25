@@ -1,33 +1,30 @@
-import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import { Product } from '../utils/types';
+import { CartItem } from '../utils/types';
+import { useCartStore } from '../store/cartStore';
 
 interface Props {
-    item: Product;
-    onIncrease: (barcode: string) => void;
-    onDecrease: (barcode: string) => void;
+    item: CartItem;
 }
 
-const ProductItem = ({ item, onIncrease, onDecrease }: Props) => {
+const ProductItem = ({ item }: Props) => {
+    const onIncrease = useCartStore(state => state.increaseQuantity);
+    const onDecrease = useCartStore(state => state.decreaseQuantity);
+    const { quantity, barcode, name, price} = item;
+
     return (
         <View style={styles.card}>
-            {/* Product Image */}
             <View style={styles.imageContainer}>
-                {item.image ? (
-                    <Image source={{ uri: item.image }} style={styles.image} />
-                ) : (
-                    <Text style={styles.imagePlaceholder}>📦</Text>
-                )}
+                <Text style={styles.imagePlaceholder}>📦</Text>
             </View>
 
             {/* Product Details */}
             <View style={styles.details}>
                 <Text numberOfLines={2} style={styles.name}>
-                    {item.name}
+                    {name}
                 </Text>
 
-                <Text style={styles.price}>₹{item.price}</Text>
+                <Text style={styles.price}>₹{price}</Text>
             </View>
 
             {/* Quantity Controls */}
@@ -35,22 +32,22 @@ const ProductItem = ({ item, onIncrease, onDecrease }: Props) => {
                 <View style={styles.quantityContainer}>
                     <TouchableOpacity
                         style={styles.circleButton}
-                        onPress={() => onDecrease(item.barcode)}
+                        onPress={() => onDecrease(barcode)}
                     >
                         <Text style={styles.buttonText}>−</Text>
                     </TouchableOpacity>
 
-                    <Text style={styles.quantity}>{item.quantity}</Text>
+                    <Text style={styles.quantity}>{quantity}</Text>
 
                     <TouchableOpacity
                         style={styles.circleButton}
-                        onPress={() => onIncrease(item.barcode)}
+                        onPress={() => onIncrease(barcode)}
                     >
                         <Text style={styles.buttonText}>+</Text>
                     </TouchableOpacity>
                 </View>
 
-                <Text style={styles.total}>₹{item.price * item.quantity}</Text>
+                <Text style={styles.total}>₹{price * quantity}</Text>
             </View>
         </View>
     );

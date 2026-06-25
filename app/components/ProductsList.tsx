@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
     FlatList,
     Modal,
@@ -9,30 +9,15 @@ import {
     View
 } from 'react-native';
 import ProductItem from './ProductItem';
-import { Product } from '../utils/types';
+import { useCartStore } from '../store/cartStore';
 
-interface Props {
-    products: Product[];
-    totalAmount: number;
-    onIncrease: (barcode: string) => void;
-    onDecrease: (barcode: string) => void;
-}
-
-const ProductsList = ({
-    products,
-    totalAmount,
-    onIncrease,
-    onDecrease
-}: Props) => {
+const ProductsList = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [email, setEmail] = useState('');
+    const {cart, totalAmount} = useCartStore();
 
     const sendEmail = () => {
         console.log('Send receipt to:', email);
-
-        // TODO:
-        // Generate receipt
-        // Send email using backend/API
 
         setIsModalVisible(false);
         setEmail('');
@@ -40,20 +25,21 @@ const ProductsList = ({
     return (
         <View style={{ flex: 0.6, backgroundColor: 'white' }}>
             <FlatList
-                data={products}
+                data={cart}
                 keyExtractor={item => item.barcode}
                 renderItem={({ item }) => (
-                    <ProductItem
-                        item={item}
-                        onIncrease={onIncrease}
-                        onDecrease={onDecrease}
-                    />
+                    <ProductItem item={item}/>
                 )}
             />
             <View style={styles.footer}>
                 <Text style={styles.totalText}>Total: ₹{totalAmount}</Text>
                 <TouchableOpacity
-                    style={styles.sendButton}
+                    disabled={cart.length === 0}
+                    activeOpacity={cart.length === 0 ? 0.5 : 1}
+                    style={[
+                        styles.sendModalButton,
+                        cart.length === 0 && styles.sendModalButtonDisabled,
+                    ]} 
                     onPress={() => setIsModalVisible(true)}
                 >
                     <Text style={styles.sendButtonText}>Send Email</Text>
@@ -181,6 +167,10 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         paddingHorizontal: 20,
         paddingVertical: 10
+    },
+
+    sendModalButtonDisabled: {
+        opacity: 0.5,
     },
 
     sendText: {
