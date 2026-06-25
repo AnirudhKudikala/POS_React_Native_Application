@@ -1,4 +1,4 @@
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 export interface Product {
     barcode: string;
@@ -9,12 +9,11 @@ export interface Product {
 }
 
 export type RootStackParamList = {
-  PermissionsScreen: undefined;
-  MainScreen: undefined;
+    PermissionsScreen: undefined;
+    MainScreen: undefined;
 };
 
-export type PermissionsScreenNavigationProp =
-  NativeStackNavigationProp<
+export type PermissionsScreenNavigationProp = NativeStackNavigationProp<
     RootStackParamList,
-    "PermissionsScreen"
-  >;
+    'PermissionsScreen'
+>;

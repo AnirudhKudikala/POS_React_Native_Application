@@ -1,20 +1,16 @@
-import Sound from "react-native-sound";
+import Sound from 'react-native-sound';
 
-Sound.setCategory("Playback");
+Sound.setCategory('Playback');
 
 export const playBeep = () => {
-  const sound = new Sound(
-    "beep.mp3",
-    Sound.MAIN_BUNDLE,
-    error => {
-      if (error) {
-        console.log(error);
-        return;
-      }
+    const sound = new Sound('beep.mp3', Sound.MAIN_BUNDLE, error => {
+        if (error) {
+            console.log(error);
+            return;
+        }
 
-      sound.play(() => {
-        sound.release();
-      });
-    }
-  );
+        sound.play(() => {
+            sound.release();
+        });
+    });
 };
