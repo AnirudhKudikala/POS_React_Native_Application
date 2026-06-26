@@ -1,6 +1,7 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 export interface Product {
+    id: number,
     barcode: string;
     name: string;
     price: number;
@@ -8,6 +9,11 @@ export interface Product {
 }
 
 export interface CartItem extends Product{
+    quantity: number
+}
+
+export interface ProductsDetails {
+    productId: number,
     quantity: number
 }
 

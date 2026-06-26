@@ -1,4 +1,4 @@
-import { CartItem } from "./types";
+import { ProductsDetails } from "./types";
 
 const BASE_URL = 'http://localhost:3000';
 
@@ -20,20 +20,18 @@ export const getProductByBarcode = async (barcode: string) => {
 
 export const sendReceipt = async (
     email: string,
-    cart: CartItem[],
-    totalAmount: number
+    productDetails: ProductsDetails[]
 ) => {
     const response = await fetch(
-        `${BASE_URL}/email/send-email`,
+        `${BASE_URL}/sales`,
         {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                to: email,
-                cart,
-                totalAmount,
+                customerEmail: email,
+                items: productDetails
             }),
         }
     );

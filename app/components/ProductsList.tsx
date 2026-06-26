@@ -13,6 +13,7 @@ import {
 import ProductItem from './ProductItem';
 import { useCartStore } from '../store/cartStore';
 import { sendReceipt } from '../utils/api';
+import { ProductsDetails } from '../utils/types';
 
 const ProductsList = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -32,8 +33,12 @@ const ProductsList = () => {
             }
 
             setIsSending(true);
+            const productsDetails: ProductsDetails[] = cart.map(item => ({
+                productId: item.id,
+                quantity: item.quantity,
+            }))
     
-            const response = await sendReceipt(email, cart, totalAmount);
+            const response = await sendReceipt(email, productsDetails);
     
             if (response.success) {
                 clearCart();
