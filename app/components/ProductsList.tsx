@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {
+    ActivityIndicator,
     Alert,
     FlatList,
     Modal,
@@ -16,6 +17,7 @@ import { sendReceipt } from '../utils/api';
 const ProductsList = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [email, setEmail] = useState('');
+    const [isSending, setIsSending] = useState(false);
     const cart = useCartStore(state => state.cart);
     const totalAmount = useCartStore(state => state.totalAmount);
     const clearCart = useCartStore(state => state.clearCart);
@@ -28,18 +30,24 @@ const ProductsList = () => {
                 Alert.alert('Invalid Email', 'Please enter a valid email address.');
                 return;
             }
+
+            setIsSending(true);
+    
             const response = await sendReceipt(email, cart, totalAmount);
-            setIsModalVisible(false);
-            setEmail('');
     
             if (response.success) {
                 clearCart();
+                setIsModalVisible(false);
+                setEmail('');
+    
                 Alert.alert('Success', 'Receipt sent successfully');
             } else {
                 Alert.alert('Error', response.message);
             }
         } catch (error) {
             Alert.alert('Error', 'Unable to send email');
+        } finally {
+            setIsSending(false);
         }
     };
     return (
@@ -97,14 +105,19 @@ const ProductsList = () => {
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                disabled={!email.trim()}
+                                disabled={!email.trim() || isSending}
                                 style={[
                                     styles.sendModalButton,
-                                    !email.trim() && styles.sendModalButtonDisabled,
+                                    (!email.trim() || isSending) &&
+                                        styles.sendModalButtonDisabled,
                                 ]}
                                 onPress={sendEmail}
                             >
-                                <Text style={styles.sendText}>Send</Text>
+                                {isSending ? (
+                                    <ActivityIndicator color="#fff" size="small" />
+                                ) : (
+                                    <Text style={styles.sendText}>Send</Text>
+                                )}
                             </TouchableOpacity>
                         </View>
                     </View>
